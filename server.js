@@ -86,8 +86,10 @@ app.post('/api/articles', upload.fields([
             return res.status(400).json({ error: "Rasm va PDF fayl yuklanishi shart!" });
         }
 
-        const imageUrl = `http://localhost:5000/uploads/${req.files['image'][0].filename}`;
-        const fileUrl = `http://localhost:5000/uploads/${req.files['pdfFile'][0].filename}`;
+        const host = req.get('host');
+        const protocol = req.protocol;
+        const imageUrl = protocol + "://" + host + "/uploads/" + req.files['image'][0].filename;
+        const fileUrl = protocol + "://" + host + "/uploads/" + req.files['pdfFile'][0].filename;;
 
         const newArticle = new Article({
             title,
@@ -146,7 +148,10 @@ app.delete('/api/articles/:id', async (req, res) => {
     }
 });
 
-app.listen(5000, () => console.log("🚀 Server 5000-da ishga tushdi"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log("Server " + PORT + "-da ishga tushdi");
+});
 
 // 1. Video Modeli
 const Video = mongoose.model('Video', new mongoose.Schema({
