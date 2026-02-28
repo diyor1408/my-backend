@@ -233,3 +233,4 @@ app.get('/api/videos/:id', async (req, res) => {
         res.status(500).json({ error: "Server xatosi" });
     }
 });
+
