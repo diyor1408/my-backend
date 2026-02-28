@@ -71,7 +71,27 @@ app.post('/api/register', async (req, res) => {
         res.status(500).json({ error: "Xatolik yuz berdi" });
     }
 });
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        // Bazadan foydalanuvchini qidirish
+        const user = await User.findOne({ email, password });
 
+        if (user) {
+            // Admin ekanligini tekshirish
+            const isAdmin = email === "admin@dr-med.uz";
+            res.status(200).json({ 
+                message: "Xush kelibsiz", 
+                user: user,
+                isAdmin: isAdmin 
+            });
+        } else {
+            res.status(401).json({ error: "Email yoki parol xato!" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Serverda xatolik yuz berdi" });
+    }
+});
 // B. Universal Maqola yuklash (Fayl YOKI Link)
 // Maqola yuklash API qismi (Buni server.js dagi eskisini o'rniga qo'ying)
 app.post('/api/articles', upload.fields([
@@ -233,4 +253,5 @@ app.get('/api/videos/:id', async (req, res) => {
         res.status(500).json({ error: "Server xatosi" });
     }
 });
+
 
